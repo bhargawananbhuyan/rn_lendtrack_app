@@ -113,7 +113,13 @@ const Homepage = () => {
             </View>
           </Pressable>
 
-          <ScrollView style={{ paddingTop: "25%", paddingHorizontal: 20 }}>
+          <ScrollView
+            contentContainerStyle={{
+              paddingTop: "25%",
+              paddingHorizontal: 20,
+              paddingBottom: 24,
+            }}
+          >
             <View
               style={{
                 alignItems: "center",
@@ -137,7 +143,7 @@ const Homepage = () => {
                     ${calculateTaxes(transactions).lend}
                   </Text>
                   <Text
-                    style={{ color: "#22c55e", fontSize: 12, marginTop: 3.5 }}
+                    style={{ color: "#ef4444", fontSize: 12, marginTop: 3.5 }}
                   >
                     Lend
                   </Text>
@@ -157,7 +163,7 @@ const Homepage = () => {
                     ${calculateTaxes(transactions).borrowed}
                   </Text>
                   <Text
-                    style={{ color: "#ef4444", fontSize: 12, marginTop: 3.5 }}
+                    style={{ color: "#22c55e", fontSize: 12, marginTop: 3.5 }}
                   >
                     Borrowed
                   </Text>
