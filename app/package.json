@@ -53,5 +53,8 @@
       "json",
       "node"
     ]
+  },
+  "prettier": {
+    "semi": false
   }
 }

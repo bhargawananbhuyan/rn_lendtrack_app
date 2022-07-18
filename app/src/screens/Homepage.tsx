@@ -1,14 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { StackActions, useNavigation } from "@react-navigation/native"
-import React, { useEffect, useReducer, useState } from "react"
-import {
-  BackHandler,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native"
+import React, { useEffect, useReducer } from "react"
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import Icon from "react-native-vector-icons/MaterialIcons"
 import { authService, colors } from "../utils/constants"
 
@@ -63,15 +56,9 @@ const Homepage = () => {
     })()
   }, [])
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      BackHandler.exitApp()
-      return true
-    })
-
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", () => true)
-  }, [])
+  const handleFab = () => {
+    navigation.navigate("add_txn_screen" as never)
+  }
 
   return (
     <SafeAreaView style={styles.root}>
@@ -104,6 +91,7 @@ const Homepage = () => {
           <Pressable
             style={styles.addButton}
             android_ripple={{ color: "#fff" }}
+            onPress={handleFab}
           >
             <Icon name="add" color="#fff" size={27} />
           </Pressable>

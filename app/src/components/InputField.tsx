@@ -10,7 +10,7 @@ type InputProps = {
   error: boolean
   errorMsg: string
   onChangeText: (value: string) => void
-  onBlur: () => {}
+  onBlur: () => void
 }
 
 const InputField: React.FC<InputProps> = ({
