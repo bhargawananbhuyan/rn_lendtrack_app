@@ -5,5 +5,10 @@ export const colors = {
 }
 
 export const authService = axios.create({
-  baseURL: "http://192.168.43.18:5000/api/auth",
+  baseURL: "http://192.168.19.129:5000/api/auth",
 })
+
+export const options = [
+  "Lend",
+  "Borrowed"
+]
