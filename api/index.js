@@ -17,6 +17,7 @@ const startApp = async () => {
 
 	// routes
 	app.use('/api/auth', require('./routes').authRoutes)
+	app.use('/api/transactions', require('./routes').transactionsRoutes)
 
 	await new Promise((resolve) => app.listen(port, resolve))
 	console.log(`listening to app on port ${port}...`)

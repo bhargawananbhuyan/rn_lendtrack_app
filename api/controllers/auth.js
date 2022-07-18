@@ -1,6 +1,5 @@
 const { genSalt, hash, compare } = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
 const User = require('../models/User')
 
 const registerUserController = async (req, res) => {
