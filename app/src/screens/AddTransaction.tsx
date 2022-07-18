@@ -1,11 +1,14 @@
-import { useNavigation } from "@react-navigation/native"
-import React, { useState } from "react"
-import { Text, View } from "react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { StackActions, useNavigation } from "@react-navigation/native"
+import dayjs from "dayjs"
+import React, { useContext, useState } from "react"
+import { Text, ToastAndroid, View } from "react-native"
 import BackButton from "../components/BackButton"
 import Dropdown from "../components/Dropdown"
 import InputField from "../components/InputField"
 import SubmitButton from "../components/SubmitButton"
-import { options } from "../utils/constants"
+import { options, transactionService } from "../utils/constants"
+import { TransactionsContext } from "../utils/TransactionsProvider"
 
 const AddTransaction = () => {
   const navigation = useNavigation()
@@ -15,6 +18,7 @@ const AddTransaction = () => {
     amount: "",
     dateOfSettlement: "",
   })
+  const { addTransaction }: any = useContext(TransactionsContext)
 
   return (
     <View>
@@ -63,7 +67,7 @@ const AddTransaction = () => {
 
         <View style={{ marginVertical: 12 }}>
           <InputField
-            placeholder="Date of settlement (DD-MM-YYYY)"
+            placeholder="Date of settlement (YYYY-MM-DD)"
             value={otherFormData.dateOfSettlement}
             onChangeText={(value) =>
               setOtherFormData({ ...otherFormData, dateOfSettlement: value })
@@ -74,7 +78,39 @@ const AddTransaction = () => {
           />
         </View>
 
-        <SubmitButton text="Submit" onPress={() => {}} />
+        <SubmitButton
+          text="Submit"
+          onPress={async () => {
+            try {
+              const res = await transactionService.post(
+                "/",
+                {
+                  transactionType: options.indexOf(txnType),
+                  secondParty: otherFormData.receipentName,
+                  amount: parseFloat(otherFormData.amount),
+                  dateOfSettlement: dayjs(otherFormData.dateOfSettlement),
+                },
+                {
+                  headers: {
+                    auth_token: ("Bearer " +
+                      (await AsyncStorage.getItem("@token"))) as string,
+                  },
+                }
+              )
+              if (res.data?.data) {
+                ToastAndroid.show(
+                  "Transaction added successfully",
+                  ToastAndroid.SHORT
+                )
+                addTransaction(res.data?.data)
+                navigation.dispatch(StackActions.pop())
+                return
+              }
+            } catch (error) {
+              ToastAndroid.show((error as any)?.message, ToastAndroid.SHORT)
+            }
+          }}
+        />
       </View>
     </View>
   )

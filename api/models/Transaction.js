@@ -19,6 +19,10 @@ module.exports = model(
 			type: Number,
 			required: true,
 		},
+		dateOfSettlement: {
+			type: Date,
+			required: true,
+		},
 		createdAt: {
 			type: Date,
 			default: Date.now,

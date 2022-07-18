@@ -1,13 +1,15 @@
 const Transaction = require('../models/Transaction')
 
 const addTransactionController = async (req, res) => {
-	const { transactionType, secondParty, amount } = req.body
+	const { transactionType, secondParty, amount, dateOfSettlement } = req.body
+	console.log(req.body)
 
 	const newTransaction = new Transaction({
 		userId: req.user._id,
 		transactionType,
 		secondParty,
 		amount,
+		dateOfSettlement
 	})
 
 	try {
