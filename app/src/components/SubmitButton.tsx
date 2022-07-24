@@ -6,12 +6,16 @@ type SubmitButtonProps = {
   text: string
   outlined?: boolean
   onPress: () => void
+  addStyle?: object
 }
 
 const SubmitButton = (props: SubmitButtonProps) => {
   return (
     <Pressable
-      style={props.outlined ? styles.outlinedButton : styles.submitButton}
+      style={[
+        props.outlined ? styles.outlinedButton : styles.submitButton,
+        props.addStyle,
+      ]}
       android_ripple={{ color: "#ffffff" }}
       onPress={props.onPress}
     >

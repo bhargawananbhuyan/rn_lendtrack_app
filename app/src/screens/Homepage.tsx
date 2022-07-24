@@ -12,60 +12,31 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons"
 import Transaction from "../components/Transaction"
 import { authService, colors, transactionService } from "../utils/constants"
+import getAvatar from "../utils/getAvatar"
 import { calculateTaxes } from "../utils/taxUtils"
 import { TransactionsContext } from "../utils/TransactionsProvider"
-
-let initialState = {
-  loading: false,
-  user: {},
-  error: "",
-}
-
-const userReducer = (state: any, action: any) => {
-  switch (action.type) {
-    case "GET_USER_REQUEST":
-      return {
-        ...state,
-        loading: true,
-      }
-
-    case "GET_USER_SUCCESS":
-      return {
-        loading: false,
-        user: action.payload,
-        error: "",
-      }
-
-    case "GET_USER_ERROR":
-      return {
-        loading: false,
-        user: {},
-        error: action.payload,
-      }
-
-    default:
-      return state
-  }
-}
+import { UserContext } from "../utils/UserProvider"
 
 const Homepage = () => {
-  const [state, dispatch] = useReducer(userReducer, initialState)
-
   const navigation = useNavigation()
 
-  const { transactions, addTransaction, getAllTransactions }: any =
+  const { transactions, getAllTransactions }: any =
     useContext(TransactionsContext)
+
+  const { user, getUserRequest, getUserSuccess, getUserError }: any =
+    useContext(UserContext)
 
   useEffect(() => {
     ;(async () => {
-      dispatch({ type: "GET_USER_REQUEST" })
+      getUserRequest()
       const auth_token = await AsyncStorage.getItem("@token")
       const res = await authService.get("/user", {
         headers: {
           auth_token: `Bearer ${auth_token}`,
         },
       })
-      dispatch({ type: "GET_USER_SUCCESS", payload: res.data?.data })
+
+      getUserSuccess(res.data?.data)
     })()
     ;(async () => {
       try {
@@ -87,7 +58,7 @@ const Homepage = () => {
 
   return (
     <SafeAreaView style={styles.root}>
-      {state.loading ? (
+      {user.loading ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
@@ -97,18 +68,23 @@ const Homepage = () => {
         <>
           <Pressable
             style={styles.avatarWrapper}
-            onPress={async () => {
-              await AsyncStorage.removeItem("@token")
-              navigation.dispatch(StackActions.replace("landing_screen"))
-            }}
+            onPress={() =>
+              navigation.dispatch(
+                StackActions.replace(
+                  "profile_screen" as never,
+                  {
+                    user: user.user,
+                  } as never
+                )
+              )
+            }
           >
             <Text style={{ color: "#fff" }}>
-              {state.user.email?.slice(0, 12)}...
+              {user.user.email?.slice(0, 12)}...
             </Text>
             <View style={styles.avatar}>
               <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                {state.user.fullName?.split(" ")[0][0]}
-                {state.user.fullName?.split(" ")[1][0]}
+                {getAvatar(user.user.fullName)}
               </Text>
             </View>
           </Pressable>
@@ -179,7 +155,14 @@ const Homepage = () => {
                   amount={t.amount}
                   transactionType={t.transactionType}
                   dateOfSettlement={t.dateOfSettlement}
-                  handlePress={() => {}}
+                  handlePress={() => {
+                    navigation.navigate(
+                      "txn_details_screen" as never,
+                      {
+                        transaction: t,
+                      } as never
+                    )
+                  }}
                 />
               ))}
           </ScrollView>

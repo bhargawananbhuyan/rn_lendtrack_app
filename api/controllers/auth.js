@@ -50,4 +50,20 @@ const getUserController = async (req, res) => {
 	}
 }
 
-module.exports = { registerUserController, loginUserController, getUserController }
+const updateUserController = async (req, res) => {
+	try {
+		const existingUser = await User.findOne({ _id: req.user._id })
+		if (!existingUser) return res.status(400).json({ error: "user doesn't exist" })
+
+		const updatedUser = await User.findOneAndUpdate({_id: req.user._id}, {
+			fullName: req.body.fullName,
+			email: req.body.email,
+			password: await hash(req.body.password, await genSalt(10))
+		}, {new: true})
+		res.status(200).json({ data: updatedUser })
+	} catch (error) {
+		res.status(500).json({ error: 'server error' })
+	}
+}
+
+module.exports = { registerUserController, loginUserController, getUserController, updateUserController }

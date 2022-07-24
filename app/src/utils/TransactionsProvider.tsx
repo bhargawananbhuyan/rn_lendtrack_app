@@ -36,6 +36,27 @@ const transactionsReducer = (state = initialState, action: any) => {
         data: [action.payload, ...state.data],
       }
 
+    case "DELETE_TRANSACTION_SUCCESS":
+      return {
+        ...state,
+        data: state.data?.filter((d) => (d as any)._id !== action.payload),
+      }
+
+    case "UPDATE_TRANSACTION_SUCCESS":
+      const _data: object[] = []
+      state.data?.forEach((d) => {
+        if ((d as any)._id === action.payload._id) {
+          _data.push(action.payload)
+        } else {
+          _data.push(d)
+        }
+      })
+
+      return {
+        ...state,
+        data: _data,
+      }
+
     default:
       return state
   }
@@ -54,6 +75,12 @@ const TransactionsProvider: React.FC<PropsWithChildren> = ({ children }) => {
           },
           addTransaction: (data: object) => {
             dispatch({ type: "ADD_NEW_TRANSACTION", payload: data })
+          },
+          deleteTransaction: (id: string) => {
+            dispatch({ type: "DELETE_TRANSACTION_SUCCESS", payload: id })
+          },
+          updateTransaction: (data: object) => {
+            dispatch({ type: "UPDATE_TRANSACTION_SUCCESS", payload: data })
           },
         } as any
       }

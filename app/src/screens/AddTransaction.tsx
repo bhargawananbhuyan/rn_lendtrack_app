@@ -19,10 +19,11 @@ const AddTransaction = () => {
     dateOfSettlement: "",
   })
   const { addTransaction }: any = useContext(TransactionsContext)
+  const [loading, setLoading] = useState(false)
 
   return (
     <View>
-      <BackButton />
+      <BackButton action={() => navigation.dispatch(StackActions.pop())} />
 
       <View style={{ paddingHorizontal: 20 }}>
         <Text
@@ -79,9 +80,19 @@ const AddTransaction = () => {
         </View>
 
         <SubmitButton
-          text="Submit"
+          text={loading ? "Please wait..." : "Submit"}
           onPress={async () => {
+            if (
+              !otherFormData.receipentName ||
+              !otherFormData.amount ||
+              !otherFormData.dateOfSettlement
+            ) {
+              ToastAndroid.show("All fields are required.", ToastAndroid.SHORT)
+              return
+            }
+
             try {
+              setLoading(true)
               const res = await transactionService.post(
                 "/",
                 {
@@ -98,6 +109,7 @@ const AddTransaction = () => {
                 }
               )
               if (res.data?.data) {
+                setLoading(false)
                 ToastAndroid.show(
                   "Transaction added successfully",
                   ToastAndroid.SHORT
@@ -107,6 +119,7 @@ const AddTransaction = () => {
                 return
               }
             } catch (error) {
+              setLoading(false)
               ToastAndroid.show((error as any)?.message, ToastAndroid.SHORT)
             }
           }}
