@@ -126,7 +126,7 @@ const Profile = () => {
             text="Sign out"
             onPress={async () => {
               await AsyncStorage.removeItem("@token")
-              navigation.dispatch(StackActions.pop())
+              navigation.dispatch(StackActions.replace("landing_screen"))
             }}
             addStyle={{ backgroundColor: "#ef4444" }}
           />
