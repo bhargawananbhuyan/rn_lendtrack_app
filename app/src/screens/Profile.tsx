@@ -18,7 +18,6 @@ const Profile = () => {
   })
 
   const navigation = useNavigation()
-  const [loading, setLoading] = useState(false)
   const { updateUser }: any = useContext(UserContext)
 
   return (
@@ -47,7 +46,7 @@ const Profile = () => {
             }}
           >
             <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-              {getAvatar(user.fullName)}
+              {getAvatar(user?.fullName)}
             </Text>
           </View>
         </View>

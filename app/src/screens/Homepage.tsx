@@ -84,7 +84,7 @@ const Homepage = () => {
             </Text>
             <View style={styles.avatar}>
               <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                {getAvatar(user.user.fullName)}
+                {getAvatar(user?.user?.fullName)}
               </Text>
             </View>
           </Pressable>
